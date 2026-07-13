@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mail Dashboard</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">✉</span>
+        <div>
+          <h1>Mail Dashboard</h1>
+          <p>Send tracked campaigns from your own Gmail accounts</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="grid">
+      <!-- Sender accounts -->
+      <section class="card" id="accounts-card">
+        <h2>1 · Sender account</h2>
+        <label class="field-label" for="account-select">Send from</label>
+        <select id="account-select"></select>
+
+        <details class="add-account">
+          <summary>+ Add a Gmail account</summary>
+          <div class="add-account-form">
+            <input id="acc-label" type="text" placeholder="Label (e.g. Sales Team)" />
+            <input id="acc-email" type="email" placeholder="you@gmail.com" />
+            <input id="acc-app-password" type="password" placeholder="16-character app password" />
+            <button id="acc-save-btn">Save account</button>
+            <p class="hint">
+              Use a Google <strong>App Password</strong>, not your normal password.
+              Generate one at
+              <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">
+                myaccount.google.com/apppasswords
+              </a>
+              (requires 2-Step Verification enabled).
+            </p>
+          </div>
+        </details>
+      </section>
+
+      <!-- PDF extraction -->
+      <section class="card" id="pdf-card">
+        <h2>2 · Extract recipients from PDF</h2>
+        <label class="dropzone" id="dropzone">
+          <input type="file" id="pdf-input" accept="application/pdf" hidden />
+          <span id="dropzone-text">Click to choose a PDF, or drop it here</span>
+        </label>
+        <div id="extracted-wrap" class="hidden">
+          <p class="hint" id="extracted-count"></p>
+          <textarea id="recipients-box" rows="5"></textarea>
+          <p class="hint">One email per line — edit the list before sending if needed.</p>
+        </div>
+      </section>
+
+      <!-- Compose -->
+      <section class="card" id="compose-card">
+        <h2>3 · Compose & send</h2>
+
+        <label class="field-label" for="subject-preset">Subject template</label>
+        <select id="subject-preset">
+          <option value="Application for the role — [Your Name]">Job application</option>
+          <option value="Resume for your consideration — [Your Name]">Sharing my resume</option>
+          <option value="Following up on my application">Follow-up</option>
+          <option value="__custom__">Custom subject...</option>
+        </select>
+        <input id="subject" type="text" placeholder="Subject" />
+
+        <textarea id="message" rows="8" placeholder="Write your message..."></textarea>
+
+        <label class="field-label" for="attachment-input">Attachment (e.g. resume PDF) — optional</label>
+        <input id="attachment-input" type="file" />
+        <p class="hint" id="attachment-name"></p>
+
+        <button id="send-btn">Send to list above</button>
+        <p id="send-status" class="hint"></p>
+
+        <hr class="divider" />
+
+        <h2>Or send to one email manually</h2>
+        <label class="field-label" for="manual-email">Recipient's email</label>
+        <input id="manual-email" type="email" placeholder="someone@example.com" />
+        <button id="manual-send-btn">Send to this email</button>
+        <p id="manual-send-status" class="hint"></p>
+      </section>
+
+      <!-- Tracking -->
+      <section class="card wide" id="tracking-card">
+        <div class="tracking-head">
+          <h2>4 · Open tracking</h2>
+          <button id="refresh-btn">Refresh</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Recipient</th>
+              <th>Subject</th>
+              <th>Sender</th>
+              <th>Sent</th>
+              <th>Pixel opened</th>
+              <th>Link clicked</th>
+            </tr>
+          </thead>
+          <tbody id="tracking-body"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
