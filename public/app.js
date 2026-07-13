@@ -135,8 +135,13 @@ async function sendCampaign(recipients, statusEl, button, busyLabel, idleLabel) 
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Send failed");
     const okCount = data.results.filter((r) => r.status === "sent").length;
-    const failCount = data.results.length - okCount;
-    statusEl.textContent = `Sent: ${okCount}${failCount ? `, Failed: ${failCount}` : ""}`;
+    const failed = data.results.filter((r) => r.status === "failed");
+    let text = `Sent: ${okCount}`;
+    if (failed.length) {
+      const firstError = failed[0].error || "unknown error";
+      text += `, Failed: ${failed.length} — ${firstError}`;
+    }
+    statusEl.textContent = text;
     await loadTracking();
   } catch (err) {
     statusEl.textContent = "Error: " + err.message;
@@ -171,8 +176,10 @@ async function loadTracking() {
       const attachmentTag = e.attachmentName ? ` 📎 ${escapeHtml(e.attachmentName)}` : "";
 
       let openedCell;
-      if (e.status === "failed") openedCell = `<span class="badge badge-failed">Failed</span>`;
-      else if (e.opened) openedCell = `<span class="badge badge-opened">Opened${e.openedAt ? "<br>" + new Date(e.openedAt).toLocaleString() : ""}</span>`;
+      if (e.status === "failed") {
+        const errTitle = e.error ? escapeHtml(e.error) : "Unknown error";
+        openedCell = `<span class="badge badge-failed" title="${errTitle}">Failed ⓘ</span><div class="hint" style="margin-top:4px;">${errTitle}</div>`;
+      } else if (e.opened) openedCell = `<span class="badge badge-opened">Opened${e.openedAt ? "<br>" + new Date(e.openedAt).toLocaleString() : ""}</span>`;
       else openedCell = `<span class="badge badge-sent">Not detected</span>`;
 
       let clickedCell;
